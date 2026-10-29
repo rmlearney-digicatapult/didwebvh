@@ -92,12 +92,13 @@ A `did:webvh` resolver acts as an HTTP client on behalf of an untrusted DID stri
 
 1. **No automatic redirects.** Do not auto-follow HTTP 3xx responses when fetching `did.jsonl` or `did-witness.json`. If redirect-following is an opt-in, re-apply every check below at each target.
 2. **IP-literal rejection.** Reject IPv4/IPv6 literal hosts (a) by validating the unencoded ASCII domain and excluding numeric final labels as specified in [Method-Specific Identifier](#method-specific-identifier), and (b) after DNS resolution. Default deny: loopback (`127.0.0.0/8`, `::1`), private (`10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `fc00::/7`), link-local (`169.254.0.0/16`, `fe80::/10`). Dev opt-ins permitted but off by default.
-3. **Case-insensitive port separator.** Per [[spec:rfc3986]] §2.1, both `%3A` and `%3a` **MUST** be recognized as a port separator. No other percent-encoding is permitted in the domain name.
-4. **Re-validate paths after decoding.** All path checks apply to decoded values. Percent-encoded traversal sequences (`%2E%2E`, `%2e%2e`) **MUST** be rejected after decoding.
-5. **Response size cap.** Enforce a max body size for both files; check `Content-Length` first; treat absence as grounds for a stricter cap or rejection. Suggested default: 5 MiB.
-6. **Operation timeout.** Enforce a wall-clock timeout on the complete resolution. Suggested default: 30 s.
-7. **HTTPS only.** Reject any non-`https` scheme, including after a redirect.
-8. **No localhost in production.** Do not issue requests to `localhost`, `127.0.0.0/8`, `::1`, or names resolving to them. Test opt-ins off by default.
+3. **Case-insensitive port separator.** Per [[spec:rfc3986]] §2.1, both `%3A` and `%3a` **MUST** be recognized as a port separator.
+4. **Domain percent-encoding.** No other percent-encoding is permitted in the domain name.
+5. **Re-validate paths after decoding.** All path checks apply to decoded values. Percent-encoded traversal sequences (`%2E%2E`, `%2e%2e`) **MUST** be rejected after decoding.
+6. **Response size cap.** Enforce a max body size for both files; check `Content-Length` first; treat absence as grounds for a stricter cap or rejection. Suggested default: 5 MiB.
+7. **Operation timeout.** Enforce a wall-clock timeout on the complete resolution. Suggested default: 30 s.
+8. **HTTPS only.** Reject any non-`https` scheme, including after a redirect.
+9. **No localhost in production.** Do not issue requests to `localhost`, `127.0.0.0/8`, `::1`, or names resolving to them. Test opt-ins off by default.
 
 These are standard SSRF defences; stated normatively here because all four reviewed implementations were vulnerable to at least one of (1)–(4).
 
